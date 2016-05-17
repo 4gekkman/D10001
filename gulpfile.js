@@ -59,16 +59,16 @@ gulp.task('lastuse', function(callback) {
 
 		// sources: start
     sources["styles"] = [
-      "../L10000/Public/css/**/*.*",
-      "../D10001/Public/css/**/*.*",
+      "../L10000/Public/css/**/*.*", 
+      "../D10001/Public/css/**/*.*", 
     ];
     sources["javascript"] = [
-      "../L10000/Public/js/",
-      "../D10001/Public/js/",
+      "../L10000/Public/js/", 
+      "../D10001/Public/js/", 
     ];
     sources["assets"] = [
-      "../L10000/Public/assets/**/*.*",
-      "../D10001/Public/assets/**/*.*",
+      "../L10000/Public/assets/**/*.*", 
+      "../D10001/Public/assets/**/*.*", 
     ];
     // sources: end
 
@@ -82,20 +82,20 @@ gulp.task('lastuse', function(callback) {
 
 		// dests: start
     dests["styles"] = [
-      "../../../public/public/L10000/css",
-      "../../../public/public/D10001/css",
+      "../../../public/public/L10000/css", 
+      "../../../public/public/D10001/css", 
     ];
     dests["javascript"] = [
-      "../../../public/public/L10000/js",
-      "../../../public/public/D10001/js",
+      "../../../public/public/L10000/js", 
+      "../../../public/public/D10001/js", 
     ];
     dests["assets"] = [
-      "../../../public/public/L10000/assets",
-      "../../../public/public/D10001/assets",
+      "../../../public/public/L10000/assets", 
+      "../../../public/public/D10001/assets", 
     ];
     dests["php"] = [
-      "../L10000/**/*.php",
-      "../D10001/**/*.php",
+      "../L10000/**/*.php", 
+      "../D10001/**/*.php", 
     ];
     // dests: end
 
