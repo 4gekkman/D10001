@@ -24,6 +24,7 @@
  *		s0.3. Счётчик ожидающих ответа ajax-запросов
  *		s0.4. Таймеры для функций, осуществляющих ajax-запросы
  *		s0.5. Виден ли щит "идёт ajax-запрос"
+ *		s0.6. Аутентификационная модель
  *
  *  s1. Модель [такая-то]
  *
@@ -213,6 +214,84 @@ var ModelProto = { constructor: function(ModelFunctions) {
 
 	});
 
+	//---------------------------------//
+	// s0.6. Аутентификационная модель //
+	//---------------------------------//
+	self.m.s0.auth = {};
+
+		// 1] Аутентифицирован ли пользователь, как анонимный (гость) //
+		//------------------------------------------------------------//
+		self.m.s0.auth.is_anon = ko.observable(-1);
+
+		// 2] Данные об аутентифицированном пользователе //
+		//-----------------------------------------------//
+		self.m.s0.auth.user = ko.observable({});
+
+		// 3] Данные об аутентификационной записи пользователя //
+		//-----------------------------------------------------//
+		self.m.s0.auth.auth = ko.observable({});
+
+		// 4] Вошёл ли пользователь в аккаунт //
+		//------------------------------------//
+		self.m.s0.is_logged_in = ko.observable(false);
+
+		// n] Приём и обработка аутентификационных данных при 1-й загрузке //
+		//-----------------------------------------------------------------//
+		ko.computed(function(){
+
+			// n.1] Если это не первый запуск, завершить
+			if(!ko.computedContext.isInitial()) return;
+
+			// n.2] Если сервер не прислал данные, завершить
+			if(!server || !server.data || !server.data.auth) return;
+
+			// n.3] Распаковать данные, и проверить
+			var auth = JSON.parse(server.data.auth);
+			if((!auth.is_anon && auth.is_anon != 0) || !auth.user || !auth.auth) return;
+
+			// n.4] Наполнить m.s0.auth.is_anon
+			self.m.s0.auth.is_anon(auth.is_anon);
+
+			// n.5] Наполнить m.s0.auth.user
+			for(var key in auth.user) {
+
+				// 1] Если свойство не своё, пропускаем
+				if(!auth.user.hasOwnProperty(key)) continue;
+
+				// 2] Добавим свойство key в m.s0.auth.user
+				self.m.s0.auth.user()[key] = ko.observable(auth.user[key]);
+
+			}
+
+			// n.6] Наполнить m.s0.auth.auth
+			for(var key in auth.auth) {
+
+				// 1] Если свойство не своё, пропускаем
+				if(!auth.auth.hasOwnProperty(key)) continue;
+
+				// 2] Добавим свойство key в m.s0.auth.auth
+				self.m.s0.auth.auth()[key] = ko.observable(auth.auth[key]);
+
+			}
+
+			// n.7] Наполнить is_logged_in
+			(function(){
+
+				// Если пользователь "Not authenticated", записать false
+				if(!self.m.s0.auth.user() || !self.m.s0.auth.user().id || !self.m.s0.auth.user().id())
+					self.m.s0.is_logged_in(false);
+
+				// Если этот анонимный пользователь, записать false
+				else if(self.m.s0.auth.is_anon() != 0)
+					self.m.s0.is_logged_in(false);
+
+				// В противном случае, записать true
+				else
+					self.m.s0.is_logged_in(true);
+
+			})();
+
+		});
 
 	//---------------------------------//
 	// 			        		 	             //
